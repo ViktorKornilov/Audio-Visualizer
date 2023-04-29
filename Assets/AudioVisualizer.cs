@@ -1,15 +1,12 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class AudioVisualizer : MonoBehaviour
 {
     private AudioSource source;
-    public float size = 5;
-    public float power = 2;
-    public float shrinkSpeed = 3;
+    public UnityEvent<float> onAnalyzed;
 
-    private float currentPoint;
-    
     private void Start()
     {
         source = GetComponent<AudioSource>();
@@ -27,20 +24,6 @@ public class AudioVisualizer : MonoBehaviour
         }
 
         float average = sum / 733;
-        
-        
-
-        float modifiedAverage = Mathf.Pow(average, power) * size;
-        if (modifiedAverage > currentPoint)
-        {
-            currentPoint = modifiedAverage;
-        }
-        else
-        {
-            currentPoint -= Time.deltaTime * shrinkSpeed;
-        }
-        
-        transform.localScale = Vector3.one + Vector3.one * currentPoint;
-        transform.Rotate(0,modifiedAverage,0);
+        onAnalyzed.Invoke(average);
     }
 }
